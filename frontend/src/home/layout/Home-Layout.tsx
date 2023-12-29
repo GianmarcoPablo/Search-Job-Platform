@@ -7,7 +7,7 @@ export default function HomeLayout() {
         <div>
             <Navbar />
             <HeaderSection />
-            <main>
+            <main className="container mx-auto mt-8">
                 <Outlet />
             </main>
         </div>

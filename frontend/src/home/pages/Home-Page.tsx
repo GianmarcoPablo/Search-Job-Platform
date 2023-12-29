@@ -1,77 +1,80 @@
 import { useQuery } from "@tanstack/react-query";
 import getAllVacancies from "../../api/get-all-vacancies";
+import Vacancy from "../components/Vacancy";
+import { useVacanciesStore } from "../../store/vacancies.store";
+import { useEffect } from "react";
 
-export interface Vacancy {
-    id: string;
+export interface VacancyProps {
+    id: number;
     title: string;
     description: string;
     location: string;
     salary: number;
     company: string;
     skills: string[];
+    createdAt: string;
+}
+
+export function Loader() {
+    return (
+        <div className="flex mx-auto justify-center items-center align-middle">
+            <div aria-label="Loading..." role="status" className="flex items-center space-x-2">
+                <svg className="h-20 w-20 animate-spin stroke-gray-500" viewBox="0 0 256 256">
+                    <line x1="128" y1="32" x2="128" y2="64" strokeLinecap="round" strokeLinejoin="round" strokeWidth="24"></line>
+                    <line x1="195.9" y1="60.1" x2="173.3" y2="82.7" strokeLinecap="round" strokeLinejoin="round" strokeWidth="24"></line>
+                    <line x1="224" y1="128" x2="192" y2="128" strokeLinecap="round" strokeLinejoin="round" strokeWidth="24"></line>
+                    <line x1="195.9" y1="195.9" x2="173.3" y2="173.3" strokeLinecap="round" strokeLinejoin="round" strokeWidth="24"></line>
+                    <line x1="128" y1="224" x2="128" y2="192" strokeLinecap="round" strokeLinejoin="round" strokeWidth="24"></line>
+                    <line x1="60.1" y1="195.9" x2="82.7" y2="173.3" strokeLinecap="round" strokeLinejoin="round" strokeWidth="24"></line>
+                    <line x1="32" y1="128" x2="64" y2="128" strokeLinecap="round" strokeLinejoin="round" strokeWidth="24"></line>
+                    <line x1="60.1" y1="60.1" x2="82.7" y2="82.7" strokeLinecap="round" strokeLinejoin="round" strokeWidth="24"></line>
+                </svg>
+                <span className="text-4xl font-medium text-gray-500">Loading...</span>
+            </div>
+        </div>
+    )
 }
 
 export default function HomePage() {
-    const { isLoading, data, isError, error } = useQuery({
+    const { data, isLoading, isError, error } = useQuery({
         queryKey: ["vacancies"],
         queryFn: getAllVacancies,
     });
 
+    const { setVacancies, vacancies } = useVacanciesStore()
+
+    useEffect(() => {
+        if (data) {
+            setVacancies(data)
+        }
+    }, [data, setVacancies])
+
+
     if (isLoading) {
         return (
-            <div className="container mx-auto mt-8">
-                <h1 className="text-3xl font-bold text-center text-indigo-600 mb-4">
-                    Cargando...
-                </h1>
-            </div>
-        );
+            <Loader />
+        )
     }
 
     if (isError) {
-        return (
-            <div className="container mx-auto mt-8">
-                <h1 className="text-3xl font-bold text-center text-red-600 mb-4">
-                    Error: {error.message}
-                </h1>
-            </div>
-        );
+        return <h1>Error: {error.message}</h1>;
     }
 
     return (
-        <main>
-            <div className="container mx-auto mt-8">
-                <h1 className="text-4xl font-bold text-center text-blue-800 mb-6 underline">
-                    Empleos Disponibles
-                </h1>
-                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-8">
-                    {data?.map((vacancy: Vacancy) => {
-                        return (
-                            <div
-                                key={vacancy.id}
-                                className="bg-white shadow-md rounded-md p-6 transition-transform transform hover:scale-105"
-                            >
-                                <h2 className="text-xl font-bold text-blue-800 mb-2">
-                                    {vacancy.title}
-                                </h2>
-                                <p className="text-sm text-gray-700 mb-4">{vacancy.description}</p>
-                                <p className="text-sm text-gray-700 mb-2">{vacancy.location}</p>
-                                <p className="text-sm text-gray-700 mb-2">${vacancy.salary}</p>
-                                <p className="text-sm text-gray-700 mb-4">{vacancy.company}</p>
-                                <div className="flex flex-wrap gap-2">
-                                    {vacancy.skills.map((skill: string) => (
-                                        <span
-                                            key={skill}
-                                            className="text-sm bg-purple-800 text-white px-2 py-1 rounded-md"
-                                        >
-                                            {skill}
-                                        </span>
-                                    ))}
-                                </div>
-                            </div>
-                        );
-                    })}
+        <div className="my-5">
+            <h1 className="text-4xl font-bold text-center text-slate-800 mb-6 underline">
+                Empleos Disponibles
+            </h1>
+            <div className="flex justify-center">
+                <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-8">
+                    {vacancies?.map((vacancy: VacancyProps) =>
+                        <Vacancy
+                            key={vacancy.id}
+                            vacancy={vacancy}
+                        />
+                    )}
                 </div>
             </div>
-        </main>
+        </div>
     );
 }

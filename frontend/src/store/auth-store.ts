@@ -4,16 +4,27 @@ import { persist } from "zustand/middleware"
 type StatusAuth = "authenticated" | "not-authenticated" | "checking"
 type UserRole = "applicant" | "recruiter" | null
 
+interface Profile {
+    id: number,
+    lastName: string,
+    firstName: string,
+    role: string,
+    applicant?: any,
+    recruiter?: any,
+    email: string,
+}
+
+
 type State = {
     token: string,
-    profile: {},
+    profile: Profile,
     isAuth: StatusAuth,
     role: UserRole
 }
 
 type Actions = {
     setToken: (token: string) => void,
-    setProfile: (profile: {}) => void,
+    setProfile: (profile: Profile) => void,
     setRole: (role: UserRole) => void,
     logout: () => void,
     checking: () => void
@@ -21,7 +32,7 @@ type Actions = {
 
 export const useAuthStore = create(persist<State & Actions>((set) => ({
     token: "",
-    profile: {},
+    profile: {} as Profile,
     isAuth: "not-authenticated",
     role: null,
 
@@ -30,7 +41,7 @@ export const useAuthStore = create(persist<State & Actions>((set) => ({
         isAuth: "checking"
     })),
 
-    setProfile: (profile: {}) => set((state) => ({
+    setProfile: (profile: Profile) => set((state) => ({
         profile,
         isAuth: state.token ? "authenticated" : "not-authenticated",
     })),
@@ -41,7 +52,7 @@ export const useAuthStore = create(persist<State & Actions>((set) => ({
 
     logout: () => set(() => ({
         token: "",
-        profile: {},
+        profile: {} as Profile,
         isAuth: "not-authenticated",
         role: null
     })),

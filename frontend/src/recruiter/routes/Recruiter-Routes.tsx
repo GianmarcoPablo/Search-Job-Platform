@@ -12,6 +12,7 @@ export default function RecruiterRoutes() {
                 <Route path="/vacancies/create-vacancy" element={<NewVacant />} />
                 <Route path="/vacancies/vacancy/:id" element={<VacacyRecruiter />} />
                 <Route path="/candidates" element={<CandidatesRecruiterPage />} />
+                <Route path="/candidates/all/:id" element={<h1>Hola</h1>} />
                 <Route path="/*" element={<Navigate to="/recruiter" />} />
             </Route>
         </Routes>

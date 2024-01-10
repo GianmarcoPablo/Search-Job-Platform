@@ -1,0 +1,6 @@
+export { default as HomePage } from "./Home-Page"
+export { default as CandidatesRecruiterPage } from "./Candidates-Recruiter-Page"
+export { default as VacanciesRecruiterPage } from "./Vacancies-Recruiter-Page"
+export { default as ProfilePage } from "./Profile-Page"
+export { default as NewVacant } from "./New-Vacant"
+export { default as VacacyRecruiter } from "./Vacancy-Recruiter"

@@ -1,0 +1,1 @@
+Para profar el proyecto en tu maquina crea la base de datos en postgresSql con docker o descargar la base de datos y remplaza los template de las variables de entorno por los datos de tu db y ejecuta: npm run dev
